@@ -12,3 +12,32 @@ hr <- hr %>%
   rename(c("date_of_hire" = "dateof_hire", "date_of_termination" = "dateof_termination", "days_late_last_30" = "days_late_last30"))
 ```
 
+```{r}
+# calculating the percentage of employees who are not fully meeting their performance requirements 
+valid_rows <- sum(!is.na(hr$performance_score)) 
+
+hr %>% 
+  filter(performance_score != "Fully Meets") %>% 
+  count()/valid_rows * 100
+hr %>% 
+  filter(performance_score != "Exceeds") %>% 
+  count()/valid_rows * 100
+
+hr %>% 
+  filter(performance_score == "PIP") %>% 
+  count()/valid_rows * 100
+
+hr %>% 
+  filter(performance_score == "Needs Improvement") %>% 
+  count()/valid_rows * 100
+
+```
+
+
+```{r}
+sum(!is.na(hr$performance_score))
+```
+```{r}
+valid_rows
+```
+
