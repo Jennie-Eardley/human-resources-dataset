@@ -1,0 +1,14 @@
+```{r}
+library(tidyverse)
+library(janitor)
+```
+```{r}
+hr <- read_csv("data/HRDataset_v13.csv") %>% 
+  clean_names()
+```
+```{r}
+# ensuring that column names are consistent
+hr <- hr %>% 
+  rename(c("date_of_hire" = "dateof_hire", "date_of_termination" = "dateof_termination", "days_late_last_30" = "days_late_last30"))
+```
+
