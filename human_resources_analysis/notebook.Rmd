@@ -13,6 +13,31 @@ hr <- hr %>%
 ```
 
 ```{r}
+# converting data to lower case as dataframe utilises nconsistent capitalisation
+hr <- data.frame(lapply(hr, function(x){
+  if (is.character(x)) return(tolower(x))
+  else return(x)
+}))
+hr <- hr %>% 
+  mutate_if(is.factor, as.character)
+```
+
+```{r}
+# estabishing baselines
+hr %>% group_by(hispanic_latino) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n))
+```
+```{r}
+hr %>% group_by(race_desc) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n))
+```
+```{r}
+
+```
+
+```{r}
 # calculating the percentage of employees who are not fully meeting their performance requirements 
 valid_rows <- sum(!is.na(hr$performance_score)) 
 
@@ -30,14 +55,7 @@ hr %>%
 hr %>% 
   filter(performance_score == "Needs Improvement") %>% 
   count()/valid_rows * 100
-
+6
 ```
 
-
-```{r}
-sum(!is.na(hr$performance_score))
-```
-```{r}
-valid_rows
-```
 
