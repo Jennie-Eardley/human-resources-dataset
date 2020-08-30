@@ -29,12 +29,20 @@ hr %>% group_by(hispanic_latino) %>%
   arrange(desc(n))
 ```
 ```{r}
-hr %>% group_by(race_desc) %>% 
+ hr %>% group_by(race_desc) %>% 
+  filter(!is.na(race_desc)) %>% 
   summarise(n = n()) %>% 
-  arrange(desc(n))
+  arrange(desc(n)) 
+```
+There were a total of 29 hires from diversity job fairs, all were from ethnic minorities. 
+```{r}
+hr %>% 
+  select(race_desc, hispanic_latino, from_diversity_job_fair_id) %>% 
+  filter(from_diversity_job_fair_id == 1)
 ```
 ```{r}
-
+hr %>% 
+  select(race_desc, hispanic_latino, recruitment_source) 
 ```
 
 ```{r}
