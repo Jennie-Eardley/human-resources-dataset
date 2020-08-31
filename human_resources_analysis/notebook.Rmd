@@ -42,7 +42,32 @@ hr %>%
 ```
 ```{r}
 hr %>% 
-  select(race_desc, hispanic_latino, recruitment_source) 
+  select(race_desc, hispanic_latino, recruitment_source) %>% 
+  filter(!is.na(recruitment_source)) %>%
+  filter(recruitment_source != "other") %>% 
+  group_by(recruitment_source) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n))
+```
+```{r}
+hr %>% 
+  select(race_desc, hispanic_latino, recruitment_source) %>% 
+  filter(!is.na(recruitment_source)) %>%
+  filter(recruitment_source != "other") %>% 
+  filter(race_desc == "white") %>% 
+  group_by(recruitment_source) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n))
+```
+```{r}
+hr %>% 
+  select(race_desc, hispanic_latino, recruitment_source) %>% 
+  filter(!is.na(recruitment_source)) %>%
+  filter(recruitment_source != "other") %>% 
+  filter(race_desc != "white") %>% 
+  group_by(recruitment_source) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n))
 ```
 
 ```{r}
