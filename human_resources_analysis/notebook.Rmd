@@ -96,6 +96,7 @@ hr %>%
   summarise(n=n()) %>% 
   arrange(desc(n))
 ```
+# The president and CEO makes more than 4x that of the lowest paid position. 
 ```{r}
 hr %>% 
   group_by(position) %>% 
