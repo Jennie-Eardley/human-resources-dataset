@@ -90,5 +90,17 @@ hr %>%
   count()/valid_rows * 100
 6
 ```
+```{r}
+hr %>% 
+  group_by(position) %>% 
+  summarise(n=n()) %>% 
+  arrange(desc(n))
+```
+```{r}
+hr %>% 
+  group_by(position) %>% 
+  summarise(n = mean(pay_rate)) %>% 
+  arrange(desc(n))
+```
 
 
