@@ -103,5 +103,12 @@ hr %>%
   summarise(n = mean(pay_rate)) %>% 
   arrange(desc(n))
 ```
+```{r}
+# As the vast majority of employees where location is known are based in Massachusetts little analysis can be done about location
+hr %>% 
+  group_by(state) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n))
+```
 
 
