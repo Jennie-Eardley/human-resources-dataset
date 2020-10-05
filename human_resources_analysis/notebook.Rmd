@@ -110,5 +110,18 @@ hr %>%
   summarise(n = n()) %>% 
   arrange(desc(n))
 ```
+```{r}
+hr %>% 
+  mutate(term_reason = fct_rev(term_reason)) %>% 
+  filter(!is.na(term_reason)) %>% 
+  filter(term_reason != "n/a - still employed") %>% 
+  filter(term_reason != "n/a - has not started yet") %>% 
+  ggplot() +
+  geom_bar(aes(x = term_reason), fill = "dark blue") +
+  coord_flip() +
+  labs(x = "Reason",
+       y = "Count",
+       title = "Reasons for Leaving") 
+```
 
 
