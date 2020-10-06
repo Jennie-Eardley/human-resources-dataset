@@ -91,10 +91,7 @@ hr %>%
 6
 ```
 ```{r}
-hr %>% 
-  group_by(position) %>% 
-  summarise(n=n()) %>% 
-  arrange(desc(n))
+
 ```
 # The president and CEO makes more than 4x that of the lowest paid position. 
 ```{r}
@@ -121,7 +118,30 @@ hr %>%
   coord_flip() +
   labs(x = "Reason",
        y = "Count",
-       title = "Reasons for Leaving") 
+       title = "Reason for Leaving") 
+```
+```{r}
+have_left <- hr %>% 
+   filter(!is.na(term_reason)) %>% 
+  filter(term_reason != "n/a - still employed") %>% 
+  filter(term_reason != "n/a - has not started yet")
+have_left
+```
+```{r}
+# establishing baseline 
+total_positions <- hr %>% 
+  count(position) %>% 
+  arrange(desc(n))
 ```
 
+```{r}
+positions_left <- have_left %>% 
+count(position) %>% 
+  arrange(desc(n))
+```
+
+```{r}
+right_join(total_positions, positions_left, by = c("position" = "position")) %>% 
+  mutate(percentage = n.x/n.y)
+```
 
