@@ -181,3 +181,22 @@ right_join(total_sex_split, sex_split_left, by = c("sex" = "sex")) %>%
   rename("total" = "n.x", "have_left" = "n.y") %>% 
   mutate(percentage = round(have_left/total * 100, digits = 2))
 ```
+
+```{r}
+# establishing baseline 
+total_dept <- hr %>% 
+  count(department) %>% 
+  arrange(desc(n))
+```
+
+```{r}
+dept_left <- have_left %>% 
+count(department) %>% 
+  arrange(desc(n))
+```
+
+```{r}
+right_join(total_dept, dept_left, by = c("department" = "department")) %>%
+  rename("total" = "n.x", "have_left" = "n.y") %>% 
+  mutate(percentage = round(have_left/total * 100, digits = 2))
+```
