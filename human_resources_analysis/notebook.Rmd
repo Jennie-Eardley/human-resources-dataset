@@ -141,7 +141,43 @@ count(position) %>%
 ```
 
 ```{r}
-right_join(total_positions, positions_left, by = c("position" = "position")) %>% 
-  mutate(percentage = n.x/n.y)
+right_join(total_positions, positions_left, by = c("position" = "position")) %>%
+  rename("total" = "n.x", "have_left" = "n.y") %>% 
+  mutate(percentage = round(have_left/total * 100, digits = 2))
+```
+```{r}
+# establishing baseline 
+total_race_desc <- hr %>% 
+  count(race_desc) %>% 
+  arrange(desc(n))
 ```
 
+```{r}
+race_desc_left <- have_left %>% 
+count(race_desc) %>% 
+  arrange(desc(n))
+```
+
+```{r}
+right_join(total_race_desc, race_desc_left, by = c("race_desc" = "race_desc")) %>%
+  rename("total" = "n.x", "have_left" = "n.y") %>% 
+  mutate(percentage = round(have_left/total * 100, digits = 2))
+```
+```{r}
+# establishing baseline 
+total_sex_split <- hr %>% 
+  count(sex) %>% 
+  arrange(desc(n))
+```
+
+```{r}
+sex_split_left <- have_left %>% 
+count(sex) %>% 
+  arrange(desc(n))
+```
+
+```{r}
+right_join(total_sex_split, sex_split_left, by = c("sex" = "sex")) %>%
+  rename("total" = "n.x", "have_left" = "n.y") %>% 
+  mutate(percentage = round(have_left/total * 100, digits = 2))
+```
