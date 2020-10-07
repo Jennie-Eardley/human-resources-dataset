@@ -1,6 +1,7 @@
 ```{r}
 library(tidyverse)
 library(janitor)
+library(lubridate)
 ```
 ```{r}
 hr <- read_csv("data/HRDataset_v13.csv") %>% 
@@ -212,7 +213,7 @@ hr_function <- function(set, subset){
 ```
 
 ```{r}
-answer <- hr_function(hr, have_left)
+#answer <- hr_function(hr, have_left)
 ```
 ```{r}
 total_employees <- hr %>% count(hr$sex)
@@ -224,12 +225,46 @@ terminated_for_cause <- hr %>%
 ```
 ```{r}
 terminated_for_cause %>% 
-  summarise(mean(emp_satisfaction))
+  filter(!is.na(emp_satisfaction)) %>% 
+  summarise(mean(emp_satisfaction)) %>% 
+  round(digits = 2)
 ```
+```{r}
+have_left  %>% 
+  filter(!is.na(emp_satisfaction)) %>% 
+  summarise(mean(emp_satisfaction)) %>% 
+  round(digits = 2)
+```
+
 ```{r}
 hr %>% 
   filter(!is.na(emp_satisfaction)) %>% 
-  summarise(mean(emp_satisfaction))
+  summarise(mean(emp_satisfaction)) %>% 
+  round(digits = 2)
 ```
+```{r}
+terminated_for_cause %>% 
+  filter(!is.na(perf_score_id)) %>% 
+  summarise(mean(perf_score_id)) %>% 
+  round(digits = 2)
+```
+```{r}
+have_left  %>% 
+  filter(!is.na(perf_score_id)) %>% 
+  summarise(mean(perf_score_id)) %>% 
+  round(digits = 2)
+```
+
+```{r}
+hr %>% 
+  filter(!is.na(perf_score_id)) %>% 
+  summarise(mean(perf_score_id)) %>% 
+  round(digits = 2)
+```
+
+
+
+
+
 
 
