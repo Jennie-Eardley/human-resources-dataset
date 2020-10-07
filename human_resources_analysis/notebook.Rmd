@@ -220,7 +220,16 @@ employees_left <- have_left %>% count(have_left$sex)
 ```
 ```{r}
 terminated_for_cause <- hr %>% 
-  
+  filter(employment_status == "terminated for cause") 
+```
+```{r}
+terminated_for_cause %>% 
+  summarise(mean(emp_satisfaction))
+```
+```{r}
+hr %>% 
+  filter(!is.na(emp_satisfaction)) %>% 
+  summarise(mean(emp_satisfaction))
 ```
 
 
