@@ -2,6 +2,8 @@
 library(tidyverse)
 library(janitor)
 library(lubridate)
+library(modelr)
+library(GGally)
 ```
 ```{r}
 hr <- read_csv("data/HRDataset_v13.csv") %>% 
@@ -262,10 +264,22 @@ hr %>%
   round(digits = 2)
 ```
 ```{r}
-forecasting <- hr %>% 
-  select(marital_status_id, gender_id, dept_id, perf_score_id, from_diversity_job_fair_id, pay_rate, position_id, state, race_desc, manager_id, recruitment_source, engagement_survey, emp_satisfaction)
+forecasting_numeric <- hr %>% 
+  select( dept_id, perf_score_id, pay_rate, position_id, engagement_survey, emp_satisfaction)
+```
+```{r}
+forecasting_non_numeric <- hr %>% 
+  select(sex, race_desc)
 ```
 
+```{r}
+forecasting_numeric %>% 
+  ggpairs()
+```
+```{r}
+forecasting_non_numeric %>% 
+  ggpairs()
+```
 
 
 
