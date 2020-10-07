@@ -261,6 +261,10 @@ hr %>%
   summarise(mean(perf_score_id)) %>% 
   round(digits = 2)
 ```
+```{r}
+forecasting <- hr %>% 
+  select(marital_status_id, gender_id, dept_id, perf_score_id, from_diversity_job_fair_id, pay_rate, position_id, state, race_desc, manager_id, recruitment_source, engagement_survey, emp_satisfaction)
+```
 
 
 
