@@ -159,9 +159,8 @@ count(race_desc) %>%
 ```
 
 ```{r}
-right_join(total_race_desc, race_desc_left, by = c("race_desc" = "race_desc")) %>%
-  rename("total" = "n.x", "have_left" = "n.y") %>% 
-  mutate(percentage = round(have_left/total * 100, digits = 2))
+right_join(total_race_desc, race_desc_left, by = c("race_desc" = "race_desc")) %>%  rename("total" = "n.x", "have_left" = "n.y") %>% 
+ mutate(percentage = round(have_left/total * 100, digits = 2))
 ```
 ```{r}
 # establishing baseline 
@@ -200,3 +199,28 @@ right_join(total_dept, dept_left, by = c("department" = "department")) %>%
   rename("total" = "n.x", "have_left" = "n.y") %>% 
   mutate(percentage = round(have_left/total * 100, digits = 2))
 ```
+
+```{r}
+hr_function <- function(set, subset){
+  total_employees <- set %>% count(set$sex)
+  employees_left <- subset %>% count(subset$sex)
+  
+  right_join(total_employees, employees_left, by = c("sex" = "sex")) %>%
+  rename("total" = "n.x", "have_left" = "n.y") %>% 
+  mutate(percentage = round(have_left/total * 100, digits = 2))
+}
+```
+
+```{r}
+answer <- hr_function(hr, have_left)
+```
+```{r}
+total_employees <- hr %>% count(hr$sex)
+employees_left <- have_left %>% count(have_left$sex)
+```
+```{r}
+terminated_for_cause <- hr %>% 
+  
+```
+
+
