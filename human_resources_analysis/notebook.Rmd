@@ -112,6 +112,17 @@ hr %>%
   arrange(desc(n))
 ```
 ```{r}
+hr %>% 
+  filter(term_reason == "n/a - still employed") %>% 
+  nrow()
+```
+```{r}
+hr %>% 
+  filter(term_reason == "n/a - has not started yet") %>% 
+  nrow()
+```
+
+```{r}
 have_left <- hr %>% 
    filter(!is.na(term_reason)) %>% 
   filter(term_reason != "n/a - still employed") %>% 

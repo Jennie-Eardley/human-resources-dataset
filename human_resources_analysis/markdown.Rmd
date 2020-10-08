@@ -9,13 +9,23 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r include = FALSE}
+library(tidyverse)
+library(janitor)
+hr <- read_csv("data/HRDataset_v13.csv") %>% 
+  clean_names()
+```
+
 Staff Turnover
-```{r}
+
+There are a total of 401 staff records, with 196 currently employed and 11 due to onboard. The rest have all left, the breakdown for their reasons for leaving are as follows:
+
+```{r echo = FALSE}
 hr %>% 
   mutate(term_reason = fct_rev(term_reason)) %>% 
   filter(!is.na(term_reason)) %>% 
-  filter(term_reason != "n/a - still employed") %>% 
-  filter(term_reason != "n/a - has not started yet") %>% 
+  filter(term_reason != "N/A - still employed") %>% 
+  filter(term_reason != "N/A - Has not started yet") %>% 
   ggplot() +
   geom_bar(aes(x = term_reason), fill = "dark blue") +
   coord_flip() +
@@ -23,3 +33,4 @@ hr %>%
        y = "Count",
        title = "Reason for Leaving") 
 ```
+
