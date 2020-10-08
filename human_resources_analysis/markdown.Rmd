@@ -1,0 +1,25 @@
+---
+title: "Analysis of HR Dataset"
+author: "Jennie Eardley"
+date: "08/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Staff Turnover
+```{r}
+hr %>% 
+  mutate(term_reason = fct_rev(term_reason)) %>% 
+  filter(!is.na(term_reason)) %>% 
+  filter(term_reason != "n/a - still employed") %>% 
+  filter(term_reason != "n/a - has not started yet") %>% 
+  ggplot() +
+  geom_bar(aes(x = term_reason), fill = "dark blue") +
+  coord_flip() +
+  labs(x = "Reason",
+       y = "Count",
+       title = "Reason for Leaving") 
+```
