@@ -3,8 +3,11 @@ library(tidyverse)
 library(janitor)
 library(lubridate)
 library(modelr)
+library(gt)
 library(GGally)
 ```
+
+
 ```{r}
 hr <- read_csv("data/HRDataset_v13.csv") %>% 
   clean_names()

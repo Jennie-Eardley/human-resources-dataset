@@ -1,5 +1,5 @@
 ---
-title: "Analysis of HR Dataset"
+title: "Analysis of Dental Magic's Human Resources Dataset"
 author: "Jennie Eardley"
 date: "08/10/2020"
 output: html_document
@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(janitor)
 library(plotly)
+library(gt)
 hr <- read_csv("data/HRDataset_v13.csv") %>% 
   clean_names()
 hr <- data.frame(lapply(hr, function(x){
@@ -44,10 +45,8 @@ hr %>%
  hr %>% 
   filter(!is.na(race_desc)) %>% 
   mutate(race_desc = fct_rev(race_desc)) %>% 
-           group_by(race_desc) %>% 
-  summarise(n = n()) %>% 
   ggplot() +
-  geom_col(aes(x = race_desc, y = n), fill = "dark blue") + 
+  geom_bar(aes(x = race_desc), fill = "dark blue") + 
   coord_flip() +
   labs(x = "Racial Description",
        y = "Count", 
@@ -64,7 +63,6 @@ hr %>%
       y = "Count",
       title = "Racial Breakdown from Diversity Job Fair Recruitment")
 ```
-
 
 
 **Staff Turnover**
