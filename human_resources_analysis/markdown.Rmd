@@ -12,20 +12,71 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r include = FALSE}
 library(tidyverse)
 library(janitor)
+library(plotly)
 hr <- read_csv("data/HRDataset_v13.csv") %>% 
   clean_names()
+hr <- data.frame(lapply(hr, function(x){
+  if (is.character(x)) return(tolower(x))
+  else return(x)
+}))
+hr <- hr %>% 
+  mutate_if(is.factor, as.character)
 ```
 
-Staff Turnover
+**Data Source**
 
-There are a total of 401 staff records, with 196 currently employed and 11 due to onboard. The rest have all left, the breakdown for their reasons for leaving are as follows:
+This is a fictional dataset based around a fictional company called Dental Magic, created to teach HR analytics. The dataset is from Kaggle and is available here: https://www.kaggle.com/rhuebner/human-resources-data-set
+
+**Recruitment**
+
+**Employee Satisfaction Levels**
+
+```{r}
+hr %>% 
+  ggplot() +
+  geom_point(aes(x = emp_satisfaction, y = pay_rate))
+```
+
+
+**Diversity**
+
+```{r echo = FALSE}
+ hr %>% 
+  filter(!is.na(race_desc)) %>% 
+  mutate(race_desc = fct_rev(race_desc)) %>% 
+           group_by(race_desc) %>% 
+  summarise(n = n()) %>% 
+  ggplot() +
+  geom_col(aes(x = race_desc, y = n), fill = "dark blue") + 
+  coord_flip() +
+  labs(x = "Racial Description",
+       y = "Count", 
+       title = "Racial Breakdown Across the Company")
+```
+```{r echo = FALSE}
+hr %>% 
+  mutate(race_desc = fct_rev(race_desc)) %>% 
+  filter(from_diversity_job_fair_id == 1) %>% 
+  ggplot() + 
+  geom_bar(aes(x = race_desc), fill = "dark blue") +
+  coord_flip() +
+  labs(x = "Racial Description", 
+      y = "Count",
+      title = "Racial Breakdown from Diversity Job Fair Recruitment")
+```
+
+
+
+**Staff Turnover**
+
+There are a total of 401 staff records, with 196 currently employed and 11 due to onboard. The rest have all left, the breakdown for their reasons of leaving are as follows:
 
 ```{r echo = FALSE}
 hr %>% 
   mutate(term_reason = fct_rev(term_reason)) %>% 
   filter(!is.na(term_reason)) %>% 
-  filter(term_reason != "N/A - still employed") %>% 
-  filter(term_reason != "N/A - Has not started yet") %>% 
+  filter(term_reason != "n/a - still employed") %>% 
+  filter(term_reason != "n/a - has not started yet") %>% 
   ggplot() +
   geom_bar(aes(x = term_reason), fill = "dark blue") +
   coord_flip() +
@@ -33,4 +84,5 @@ hr %>%
        y = "Count",
        title = "Reason for Leaving") 
 ```
+
 
