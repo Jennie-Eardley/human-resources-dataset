@@ -108,7 +108,7 @@ hr %>%
 
 **Gender Pay Gap**
 
-On average, men earn $33.70 compared to $29.47 for women. 
+On average, men earn $33.70 compared to $29.47 for women. On average, men earn more than women in nine different positions. The position with the highest discrepancy is IT support workers where men earn a mean of $38.66 compared to $32.18 for women. On average, women earn more than men in six different positions with the largest discrepancy being for software engineers where women earn an average of 52.33 compared to the 48.56 earned by men. 
 ```{r echo = FALSE}
 hr %>% 
   filter(sex == "m") %>% 
@@ -121,7 +121,7 @@ hr %>%
   summarise(n = mean(pay_rate)) %>% 
     round(digits = 2)
 ```
-```{r}
+```{r echo = FALSE}
 male_rate <- hr %>% 
   filter(sex == "m") %>% 
   group_by(position) %>% 
