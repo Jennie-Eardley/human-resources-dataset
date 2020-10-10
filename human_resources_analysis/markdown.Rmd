@@ -37,31 +37,23 @@ This is a dataset based around a fictional company called Dental Magic, created 
 
 **Recruitment**
  
-```{r}
-hr <- hr %>% 
-  mutate(date_of_hire = anydate(date_of_hire))
-```
-
-```{r}
-hr %>%  
-  group_by(date_of_hire) %>% 
-  summarise(n = n())
-```
 
 ```{r echo = FALSE}
+hr <- hr %>% 
+  mutate(date_of_hire = anydate(date_of_hire))
+
 hr_tsibble <- as_tsibble(hr, key = emp_id, index = date_of_hire)
-```
-```{r}
- indexed_tsibble <- hr_tsibble %>% 
+
+indexed_tsibble <- hr_tsibble %>% 
   index_by(hire_month = ~ yearmonth(.)) %>% 
   summarise(monthly_count = n()) 
 
 ggplot(indexed_tsibble, aes(x = hire_month, y = monthly_count)) +
-  geom_line(group = 1) +
+  geom_line(group = 1, colour = "dark blue") +
   labs(x = "Year",
        y = "Count",
-       title =)
-
+       title = "Number of New Staff Recruited by Time") +
+    theme(plot.title = element_text(hjust = 0.5))
 ```
 
 
@@ -72,7 +64,10 @@ hr %>%
   ggplot() +
   geom_bar(aes(x = recruitment_source)) +
   coord_flip() +
-  labs()
+  labs(x = "Count",
+       y = "Recruitment Source",
+       title = "Recruitment Methods") +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 
@@ -95,7 +90,8 @@ hr %>%
   coord_flip() +
   labs(x = "Racial Description",
        y = "Count", 
-       title = "Racial Breakdown Across the Company")
+       title = "Racial Breakdown Across the Company") +
+    theme(plot.title = element_text(hjust = 0.5))
 ```
 ```{r echo = FALSE}
 hr %>% 
@@ -109,6 +105,41 @@ hr %>%
       title = "Racial Breakdown from Diversity Job Fair Recruitment")
 ```
 **Employee Satisfaction Levels**
+
+**Gender Pay Gap**
+
+On average, men earn $33.70 compared to $29.47 for women. 
+```{r echo = FALSE}
+hr %>% 
+  filter(sex == "m") %>% 
+  summarise(n = mean(pay_rate)) %>% 
+  round(digits = 2)
+```
+```{r echo = FALSE}
+hr %>% 
+  filter(sex == "f") %>% 
+  summarise(n = mean(pay_rate)) %>% 
+    round(digits = 2)
+```
+```{r}
+male_rate <- hr %>% 
+  filter(sex == "m") %>% 
+  group_by(position) %>% 
+  summarise(average_male_rate = mean(pay_rate)) 
+
+female_rate <- hr %>% 
+  filter(sex == "f") %>% 
+  group_by(position) %>% 
+  summarise(average_female_rate = mean(pay_rate)) 
+
+average_rate <- inner_join(male_rate, female_rate) %>% 
+  mutate(difference = average_male_rate - average_female_rate) %>% 
+  arrange(desc(difference))
+```
+```{r}
+
+```
+
 
 
 **Staff Turnover**
@@ -126,7 +157,9 @@ hr %>%
   coord_flip() +
   labs(x = "Reason",
        y = "Count",
-       title = "Reason for Leaving") 
-```
+       title = "Reason for Leaving") +
+    theme(plot.title = element_text(hjust = 0.5))
 
+```
+**Recommendations for Future Data Collection**
 
