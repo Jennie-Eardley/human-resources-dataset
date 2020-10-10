@@ -14,6 +14,9 @@ library(tidyverse)
 library(janitor)
 library(plotly)
 library(gt)
+library(tsibble)
+library(anytime)
+
 hr <- read_csv("data/HRDataset_v13.csv") %>% 
   clean_names()
 hr <- data.frame(lapply(hr, function(x){
@@ -22,18 +25,60 @@ hr <- data.frame(lapply(hr, function(x){
 }))
 hr <- hr %>% 
   mutate_if(is.factor, as.character)
+hr <- hr %>% 
+  rename(c("date_of_hire" = "dateof_hire", "date_of_termination" = "dateof_termination", "days_late_last_30" = "days_late_last30"))
+hr <- hr %>% 
+  filter(!is.na(emp_id))
 ```
 
 **Data Source**
 
-This is a fictional dataset based around a fictional company called Dental Magic, created to teach HR analytics. The dataset is from Kaggle and is available here: https://www.kaggle.com/rhuebner/human-resources-data-set
+This is a dataset based around a fictional company called Dental Magic, created to teach HR analytics. The dataset is from Kaggle and is available here: https://www.kaggle.com/rhuebner/human-resources-data-set
 
 **Recruitment**
+ 
+```{r}
+hr <- hr %>% 
+  mutate(date_of_hire = anydate(date_of_hire))
+```
 
-**Employee Satisfaction Levels**
+```{r}
+hr %>%  
+  group_by(date_of_hire) %>% 
+  summarise(n = n())
+```
+
+```{r echo = FALSE}
+hr_tsibble <- as_tsibble(hr, key = emp_id, index = date_of_hire)
+```
+```{r}
+ indexed_tsibble <- hr_tsibble %>% 
+  index_by(hire_month = ~ yearmonth(.)) %>% 
+  summarise(monthly_count = n()) 
+
+ggplot(indexed_tsibble, aes(x = hire_month, y = monthly_count)) +
+  geom_line(group = 1) +
+  labs(x = "Year",
+       y = "Count",
+       title =)
+
+```
+
+
+```{r echo = FALSE}
+hr %>% 
+  mutate(recruitment_source = fct_rev(recruitment_source)) %>% 
+  filter(!is.na(recruitment_source)) %>%
+  ggplot() +
+  geom_bar(aes(x = recruitment_source)) +
+  coord_flip() +
+  labs()
+```
+
 
 ```{r}
 hr %>% 
+  filter(!is.na(emp_satisfaction)) %>% 
   ggplot() +
   geom_point(aes(x = emp_satisfaction, y = pay_rate))
 ```
@@ -63,11 +108,12 @@ hr %>%
       y = "Count",
       title = "Racial Breakdown from Diversity Job Fair Recruitment")
 ```
+**Employee Satisfaction Levels**
 
 
 **Staff Turnover**
 
-There are a total of 401 staff records, with 196 currently employed and 11 due to onboard. The rest have all left, the breakdown for their reasons of leaving are as follows:
+There are a total of 310 staff records, with 196 currently employed and 11 due to onboard. The rest have all left, the breakdown for their reasons of leaving are as follows:
 
 ```{r echo = FALSE}
 hr %>% 
