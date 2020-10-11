@@ -56,13 +56,13 @@ ggplot(indexed_tsibble, aes(x = hire_month, y = monthly_count)) +
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
-
+The most common recruitment route is via a diversity job fair, with search engines closely following. Other targeted methods of recruitment seem to be less successful, particularly on campus recruiting, web banner ads and information sessions. It may be worth considering funds spent on these activities and their content. 
 ```{r echo = FALSE}
 hr %>% 
   mutate(recruitment_source = fct_rev(recruitment_source)) %>% 
   filter(!is.na(recruitment_source)) %>%
   ggplot() +
-  geom_bar(aes(x = recruitment_source)) +
+  geom_bar(aes(x = recruitment_source), fill = "dark blue") +
   coord_flip() +
   labs(x = "Count",
        y = "Recruitment Source",
@@ -136,8 +136,6 @@ average_rate <- inner_join(male_rate, female_rate) %>%
   mutate(difference = average_male_rate - average_female_rate) %>% 
   arrange(desc(difference))
 ```
-
-
 
 **Staff Turnover**
 

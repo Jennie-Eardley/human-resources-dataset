@@ -5,6 +5,7 @@ library(lubridate)
 library(modelr)
 library(gt)
 library(GGally)
+library(tsibble)
 ```
 
 
@@ -16,6 +17,10 @@ hr <- read_csv("data/HRDataset_v13.csv") %>%
 # cleaning column names
 hr <- hr %>% 
   rename(c("date_of_hire" = "dateof_hire", "date_of_termination" = "dateof_termination", "days_late_last_30" = "days_late_last30"))
+```
+```{r}
+hr %>% 
+  filter(is.na(date_of_hire))
 ```
 
 ```{r}
@@ -29,11 +34,11 @@ hr <- hr %>%
 ```
 
 ```{r}
-# estabishing baselines
-hr %>% group_by(hispanic_latino) %>% 
+# percentage of respondents who identify as hispanic and/or latino`
+hispanic_latino_percentage <- hr %>% group_by(hispanic_latino) %>% 
   filter(!is.na(hispanic_latino)) %>% 
-  summarise(n = n()) %>% 
-  arrange(desc(n))
+ count()
+round(hispanic_latino_percentage[2,2]/ hispanic_latino_percentage[1,2] * 100, digits = 2)
 ```
 ```{r}
  hr %>% group_by(race_desc) %>% 
@@ -282,6 +287,7 @@ forecasting_numeric %>%
 forecasting_non_numeric %>% 
   ggpairs()
 ```
+
 
 
 
