@@ -52,7 +52,7 @@ ggplot(indexed_tsibble, aes(x = hire_month, y = monthly_count)) +
   geom_line(group = 1, colour = "dark blue") +
   labs(x = "Year",
        y = "Count",
-       title = "Number of New Staff Recruited by Time") +
+       title = "Timing of New Staff Recruitment") +
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
@@ -71,7 +71,7 @@ hr %>%
 ```
 
 
-```{r}
+```{r echo = FALSE}
 hr %>% 
   filter(!is.na(emp_satisfaction)) %>% 
   ggplot() +
@@ -109,19 +109,19 @@ hr %>%
 **Gender Pay Gap**
 
 On average, men earn $33.70 compared to $29.47 for women. On average, men earn more than women in nine different positions. The position with the highest discrepancy is IT support workers where men earn a mean of $38.66 compared to $32.18 for women. On average, women earn more than men in six different positions with the largest discrepancy being for software engineers where women earn an average of 52.33 compared to the 48.56 earned by men. 
-```{r echo = FALSE}
+```{r include = FALSE}
 hr %>% 
   filter(sex == "m") %>% 
   summarise(n = mean(pay_rate)) %>% 
   round(digits = 2)
 ```
-```{r echo = FALSE}
+```{r include = FALSE}
 hr %>% 
   filter(sex == "f") %>% 
   summarise(n = mean(pay_rate)) %>% 
     round(digits = 2)
 ```
-```{r echo = FALSE}
+```{r include = FALSE}
 male_rate <- hr %>% 
   filter(sex == "m") %>% 
   group_by(position) %>% 
@@ -135,9 +135,6 @@ female_rate <- hr %>%
 average_rate <- inner_join(male_rate, female_rate) %>% 
   mutate(difference = average_male_rate - average_female_rate) %>% 
   arrange(desc(difference))
-```
-```{r}
-
 ```
 
 
@@ -161,5 +158,25 @@ hr %>%
     theme(plot.title = element_text(hjust = 0.5))
 
 ```
+```{r echo = FALSE}
+hr <- hr %>% 
+   filter(!is.na(date_of_termination)) %>% 
+  mutate(date_of_termination = mdy(date_of_termination)) 
+
+left_tsibble <- as_tsibble(hr, key = emp_id, index = date_of_termination) 
+ 
+
+left_indexed_tsibble <- left_tsibble %>% 
+  index_by(leaving_month = ~ yearmonth(.)) %>% 
+  summarise(monthly_count = n()) 
+
+ggplot(left_indexed_tsibble, aes(x = leaving_month, y = monthly_count)) +
+  geom_line(group = 1, colour = "dark blue") +
+  labs(x = "Year",
+       y = "Count",
+       title = "Timing of Staff Leaving") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
 **Recommendations for Future Data Collection**
 
