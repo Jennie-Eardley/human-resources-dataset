@@ -18,10 +18,6 @@ hr <- read_csv("data/HRDataset_v13.csv") %>%
 hr <- hr %>% 
   rename(c("date_of_hire" = "dateof_hire", "date_of_termination" = "dateof_termination", "days_late_last_30" = "days_late_last30"))
 ```
-```{r}
-hr %>% 
-  filter(is.na(date_of_hire))
-```
 
 ```{r}
 # converting data to lower case as dataframe utilises nconsistent capitalisation
@@ -86,25 +82,25 @@ hr %>%
 # calculating the percentage of employees who are not fully meeting their performance requirements 
 valid_rows <- sum(!is.na(hr$performance_score)) 
 
-hr %>% 
-  filter(performance_score != "Fully Meets") %>% 
+fully_meets <- hr %>% 
+  filter(performance_score != "fully meets") %>% 
   count()/valid_rows * 100
-hr %>% 
-  filter(performance_score != "Exceeds") %>% 
-  count()/valid_rows * 100
-
-hr %>% 
-  filter(performance_score == "PIP") %>% 
+exceeds <- hr %>% 
+  filter(performance_score != "exceeds") %>% 
   count()/valid_rows * 100
 
-hr %>% 
-  filter(performance_score == "Needs Improvement") %>% 
+pip <- hr %>% 
+  filter(performance_score == "pip") %>% 
   count()/valid_rows * 100
-6
+
+needs_improvement <- hr %>% 
+  filter(performance_score == "needs improvement") %>% 
+  count()/valid_rows * 100
+
+fully_meets + exceeds + pip + needs_improvement
+
 ```
-```{r}
 
-```
 # The president and CEO makes more than 4x that of the lowest paid position. 
 ```{r}
 hr %>% 
@@ -221,9 +217,6 @@ hr_function <- function(set, subset){
 }
 ```
 
-```{r}
-#answer <- hr_function(hr, have_left)
-```
 ```{r}
 total_employees <- hr %>% count(hr$sex)
 employees_left <- have_left %>% count(have_left$sex)
