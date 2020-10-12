@@ -106,12 +106,37 @@ hr %>%
   theme(plot.title = element_text(hjust = 0.5))
 ```
 **Performance**
+This graph shows the overall picture of performance within the company. While it does include those who have left, it excludes those who are listed but have not yet started. They seem to have erroneously been assigned a performance category and removing them prevents inaccuracies in performance score reporting. 
 
-The vast majority of employees' performance scores are rated as "fully meets". 
+The vast majority of employees' performance is rated as "fully meets" (78%). 12% of employees have a score of exceeds and 6% and 4% have a score of needs improvement and pip respectively. 
+```{r echo = FALSE}
+total_employees <- hr %>% nrow()
+
+fully_meets <- hr %>% 
+  filter(performance_score == "fully meets") %>% 
+  nrow()
+
+exceeds <- hr %>% 
+  filter(performance_score == "exceeds") %>% 
+  nrow()
+
+pip <- hr %>% 
+  filter(performance_score == "pip") %>% 
+  nrow()
+
+needs_improvement <- hr %>% 
+  filter(performance_score == "needs improvement") %>% 
+  nrow()
+
+round(fully_meets/total_employees * 100)
+round(exceeds/total_employees * 100)
+round(pip/total_employees * 100)
+round(needs_improvement/total_employees * 100)
+```
+
 ```{r echo = FALSE}
 hr %>% 
   filter(employment_status != "future start") %>% 
-  filter(employment_status != "leave of absence") %>% 
   ggplot() +
   geom_bar(aes(x = performance_score, fill = employment_status)) +
   labs(x = "Score",
@@ -140,9 +165,6 @@ hr %>%
        y = "Count",
        title = "Employee Satisfaction Levels Separated by Performance Levels")
 ```
-
-
-
 **Gender Pay Gap**
 
 On average, men earn $33.70 compared to $29.47 for women. On average, men earn more than women in nine different positions. The position with the highest discrepancy is IT support workers where men earn a mean of $38.66 compared to $32.18 for women. On average, women earn more than men in six different positions with the largest discrepancy being for software engineers where women earn an average of 52.33 compared to the 48.56 earned by men. 
@@ -213,5 +235,4 @@ ggplot(left_indexed_tsibble, aes(x = leaving_month, y = monthly_count)) +
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
-**Recommendations for Future Data Collection**
 
