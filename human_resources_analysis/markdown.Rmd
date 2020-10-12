@@ -105,26 +105,6 @@ hr %>%
       title = "Racial Breakdown from Diversity Job Fair Recruitment") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
-**Employee Satisfaction Levels**
-
-Employee satisfaction is measured on a scale of 1-5, with 5 indicating the highest satisfaction. Across the dataset, the median scoring for employee satisfaction is 4. 
-
-```{r echo = FALSE}
-median(hr$emp_satisfaction)
-```
-
-
-```{r echo = FALSE}
-hr %>% 
-  ggplot() +
-  geom_bar(aes(x = emp_satisfaction), fill = "dark blue") +
-  facet_wrap(~ performance_score) +
-  labs(x = "Employee Satisfaction",
-       y = "Count",
-       title = "Employee Satisfaction Levels Separated by Performance Levels")
-```
-
-
 **Performance**
 
 The vast majority of employees' performance scores are rated as "fully meets". 
@@ -141,6 +121,26 @@ hr %>%
   theme(plot.title = element_text(hjust = 0.5)) + 
   scale_fill_brewer()
 ```
+
+**Employee Satisfaction Levels**
+
+Employee satisfaction is measured on a scale of 1-5, with 5 indicating the highest satisfaction. Across the dataset, the median scoring for employee satisfaction is 4. It is notable that while employees with the highest performance level of "exceeds" is the only category where the mode is 5, they do not seem to be significantly more satisfied than those with other performance levels. It is unsuprising that employees with the "needs improvement" and "pip" performance levels have disproportionately incidence of a satisfaction level of 2 and two people have reported a satisfaction level of 1. 
+
+```{r echo = FALSE}
+median(hr$emp_satisfaction)
+```
+
+
+```{r echo = FALSE}
+hr %>% 
+  ggplot() +
+  geom_bar(aes(x = emp_satisfaction), fill = "dark blue") +
+  facet_wrap(~ performance_score) +
+  labs(x = "Employee Satisfaction",
+       y = "Count",
+       title = "Employee Satisfaction Levels Separated by Performance Levels")
+```
+
 
 
 **Gender Pay Gap**
