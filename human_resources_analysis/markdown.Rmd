@@ -135,7 +135,7 @@ needs_improvement_percentage <- round(needs_improvement/total_employees * 100)
 
 ```
 
-```{r}
+```{r echo = FALSE}
 satisfaction_by_position <- hr %>% 
   group_by(position) %>% 
   summarise(average_score = round(mean(emp_satisfaction), digits = 2))
@@ -151,8 +151,10 @@ position_satisfaction <- full_join(satisfaction_by_position, position_count) %>%
 position_satisfaction <- position_satisfaction %>% 
   rename("Number of Employees" = "number_of_employees", "Position" = "position", "Average Score" = "average_score")
 ```
-```{r}
-gt(position_satisfaction)
+This table demonstrates the average satisfaction scores grouped by position. It includes all positions that have more than one employee. 
+```{r echo = FALSE}
+gt(position_satisfaction) %>% 
+  tab_header("Average Satisfaction Scores Grouped by Position", subtitle = "Where Position Has More Than One Employee")
 ```
 
 ```{r echo = FALSE}
