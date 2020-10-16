@@ -38,7 +38,7 @@ This is a dataset based around a fictional company called Dental Magic, created 
 
 **Recruitment**
  
-
+ The data covers the years 2006 to 2017. This graph shows when hires were made in this time period. 
 ```{r echo = FALSE}
 hr <- hr %>% 
   mutate(date_of_hire = anydate(date_of_hire))
@@ -56,6 +56,20 @@ ggplot(indexed_tsibble, aes(x = hire_month, y = monthly_count)) +
        title = "Timing of New Staff Recruitment") +
     theme(plot.title = element_text(hjust = 0.5))
 ```
+If we combine the years togehter, we can also see that there are some seasonal differences in hiring. January is clearly the most popular month for hiring. This is perhaps unsurprising, due to the low hire rate in December. It is interesting that hiring levels in April are relatively low, this is often an optimum month for hiring as budgets are agreed for the new financial year. 
+```{r echo = FALSE}
+indexed_monthly_tsibble <- hr_tsibble %>% 
+  index_by(monthly_hire = ~ month(., label = TRUE)) %>% 
+  summarise(seasonal_count = n())
+
+ggplot(indexed_monthly_tsibble, aes(x = monthly_hire, y = seasonal_count)) +
+  geom_col(fill = "dark blue") +
+  labs(x = "Month",
+       y = "Count",
+       title = "Recruitment by Month") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
 The most common recruitment route is via a diversity job fair, with search engines closely following. Other targeted methods of recruitment seem to be less successful, particularly on campus recruiting, web banner ads and information sessions. It may be worth considering funds spent on these activities and their content. 
 ```{r echo = FALSE}
 hr %>% 
@@ -69,18 +83,6 @@ hr %>%
        title = "Recruitment Methods") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
-
-
-```{r echo = FALSE}
-hr %>% 
-  filter(!is.na(emp_satisfaction)) %>% 
-  ggplot() +
-  geom_point(aes(x = emp_satisfaction, y = pay_rate))
-```
-
-
-**Diversity**
-
 ```{r echo = FALSE}
  hr %>% 
   filter(!is.na(race_desc)) %>% 
@@ -93,6 +95,7 @@ hr %>%
        title = "Racial Breakdown Across the Company") +
     theme(plot.title = element_text(hjust = 0.5))
 ```
+
 ```{r echo = FALSE}
 hr %>% 
   mutate(race_desc = fct_rev(race_desc)) %>% 
@@ -105,6 +108,17 @@ hr %>%
       title = "Racial Breakdown from Diversity Job Fair Recruitment") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
+```{r echo = FALSE}
+hr %>% 
+  filter(!is.na(emp_satisfaction)) %>% 
+  ggplot() +
+  geom_point(aes(x = emp_satisfaction, y = pay_rate))
+```
+
+
+
+
+
 **Performance**
 This graph shows the overall picture of performance within the company. While it does include those who have left, it excludes those who are listed but have not yet started. They seem to have erroneously been assigned a performance category and removing them prevents inaccuracies in performance score reporting. 
 
@@ -151,7 +165,7 @@ position_satisfaction <- full_join(satisfaction_by_position, position_count) %>%
 position_satisfaction <- position_satisfaction %>% 
   rename("Number of Employees" = "number_of_employees", "Position" = "position", "Average Score" = "average_score")
 ```
-This table demonstrates the average satisfaction scores grouped by position. It includes all positions that have more than one employee. 
+
 ```{r echo = FALSE}
 gt(position_satisfaction) %>% 
   tab_header("Average Satisfaction Scores Grouped by Position", subtitle = "Where Position Has More Than One Employee")
@@ -238,6 +252,8 @@ hr %>%
     theme(plot.title = element_text(hjust = 0.5))
 
 ```
+Only some of these reasons 
+
 ```{r echo = FALSE}
 left_hr <- hr %>% 
    filter(!is.na(date_of_termination)) %>% 

@@ -2,9 +2,7 @@
 library(tidyverse)
 library(janitor)
 library(lubridate)
-library(modelr)
 library(gt)
-library(GGally)
 library(tsibble)
 ```
 
@@ -263,23 +261,7 @@ hr %>%
   summarise(mean(perf_score_id)) %>% 
   round(digits = 2)
 ```
-```{r}
-forecasting_numeric <- hr %>% 
-  select( dept_id, perf_score_id, pay_rate, position_id, engagement_survey, emp_satisfaction)
-```
-```{r}
-forecasting_non_numeric <- hr %>% 
-  select(sex, race_desc)
-```
 
-```{r}
-forecasting_numeric %>% 
-  ggpairs()
-```
-```{r}
-forecasting_non_numeric %>% 
-  ggpairs()
-```
 
 
 
