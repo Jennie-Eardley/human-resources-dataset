@@ -20,14 +20,22 @@ library(lubridate)
 
 hr <- read_csv("data/HRDataset_v13.csv") %>% 
   clean_names()
+
+# turns data into lower case 
 hr <- data.frame(lapply(hr, function(x){
   if (is.character(x)) return(tolower(x))
   else return(x)
 }))
+
+# switches data back to characters
 hr <- hr %>% 
   mutate_if(is.factor, as.character)
+
+# renames columns for consistency
 hr <- hr %>% 
   rename(c("date_of_hire" = "dateof_hire", "date_of_termination" = "dateof_termination", "days_late_last_30" = "days_late_last30"))
+
+# removes empty rows
 hr <- hr %>% 
   filter(!is.na(emp_id))
 ```
@@ -38,25 +46,27 @@ This is a dataset based around a fictional company called Dental Magic, created 
 
 **Recruitment**
  
- The data covers the years 2006 to 2017. This graph shows when hires were made in this time period. 
+ The data covers the time period of 2006 to 2017. This graph shows the dates that hires were made. The month with the highest number of new recruits was in September of January with 15 new recruits. 
 ```{r echo = FALSE}
+# switching the dates to a consistent format
 hr <- hr %>% 
   mutate(date_of_hire = anydate(date_of_hire))
 
+# converting the data to a tsibble to enable the creation of a timeseries 
 hr_tsibble <- as_tsibble(hr, key = emp_id, index = date_of_hire)
 
 indexed_tsibble <- hr_tsibble %>% 
   index_by(hire_month = ~ yearmonth(.)) %>% 
-  summarise(monthly_count = n()) 
+  summarise(monthly_count = n(), .groups = "drop") 
 
 ggplot(indexed_tsibble, aes(x = hire_month, y = monthly_count)) +
   geom_line(group = 1, colour = "dark blue") +
   labs(x = "Year",
-       y = "Count",
+       y = "Number of New Employees",
        title = "Timing of New Staff Recruitment") +
     theme(plot.title = element_text(hjust = 0.5))
 ```
-If we combine the years togehter, we can also see that there are some seasonal differences in hiring. January is clearly the most popular month for hiring. This is perhaps unsurprising, due to the low hire rate in December. It is interesting that hiring levels in April are relatively low, this is often an optimum month for hiring as budgets are agreed for the new financial year. 
+If we combine the years together, we can also see that there are some seasonal differences in hiring. January is clearly the most popular month for hiring. This is perhaps unsurprising, compensating for the low hire rate in December. It is interesting that hiring levels in April are relatively low, this is often an optimum month for hiring as budgets are agreed for the new financial year. 
 ```{r echo = FALSE}
 indexed_monthly_tsibble <- hr_tsibble %>% 
   index_by(monthly_hire = ~ month(., label = TRUE)) %>% 
@@ -65,7 +75,7 @@ indexed_monthly_tsibble <- hr_tsibble %>%
 ggplot(indexed_monthly_tsibble, aes(x = monthly_hire, y = seasonal_count)) +
   geom_col(fill = "dark blue") +
   labs(x = "Month",
-       y = "Count",
+       y = "Number of New Hires",
        title = "Recruitment by Month") +
     theme(plot.title = element_text(hjust = 0.5))
 ```
@@ -264,7 +274,7 @@ left_tsibble <- as_tsibble(left_hr, key = emp_id, index = date_of_termination)
 
 left_indexed_tsibble <- left_tsibble %>% 
   index_by(leaving_month = ~ yearmonth(.)) %>% 
-  summarise(monthly_count = n()) 
+  summarise(monthly_count = n(), .groups = "drop") 
 
 ggplot(left_indexed_tsibble, aes(x = leaving_month, y = monthly_count)) +
   geom_line(group = 1, colour = "dark blue") +
