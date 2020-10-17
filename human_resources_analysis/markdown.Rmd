@@ -70,7 +70,7 @@ If we combine the years together, we can also see that there are some seasonal d
 ```{r echo = FALSE}
 indexed_monthly_tsibble <- hr_tsibble %>% 
   index_by(monthly_hire = ~ month(., label = TRUE)) %>% 
-  summarise(seasonal_count = n())
+  summarise(seasonal_count = n(), .groups = "drop")
 
 ggplot(indexed_monthly_tsibble, aes(x = monthly_hire, y = seasonal_count)) +
   geom_col(fill = "dark blue") +
@@ -81,6 +81,7 @@ ggplot(indexed_monthly_tsibble, aes(x = monthly_hire, y = seasonal_count)) +
 ```
 
 The most common recruitment route is via a diversity job fair, with search engines closely following. Other targeted methods of recruitment seem to be less successful, particularly on campus recruiting, web banner ads and information sessions. It may be worth considering funds spent on these activities and their content. 
+
 ```{r echo = FALSE}
 hr %>% 
   mutate(recruitment_source = fct_rev(recruitment_source)) %>% 
@@ -93,7 +94,9 @@ hr %>%
        title = "Recruitment Methods") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
-```{r echo = FALSE}
+**Diversity**
+
+```{r echo = FALSE, figures-side, fig.show="hold", out.width="50%"}
  hr %>% 
   filter(!is.na(race_desc)) %>% 
   mutate(race_desc = fct_rev(race_desc)) %>% 
@@ -104,9 +107,7 @@ hr %>%
        y = "Count", 
        title = "Racial Breakdown Across the Company") +
     theme(plot.title = element_text(hjust = 0.5))
-```
 
-```{r echo = FALSE}
 hr %>% 
   mutate(race_desc = fct_rev(race_desc)) %>% 
   filter(from_diversity_job_fair_id == 1) %>% 
@@ -118,6 +119,8 @@ hr %>%
       title = "Racial Breakdown from Diversity Job Fair Recruitment") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
+
+
 ```{r echo = FALSE}
 hr %>% 
   filter(!is.na(emp_satisfaction)) %>% 
@@ -182,6 +185,7 @@ gt(position_satisfaction) %>%
 ```
 
 ```{r echo = FALSE}
+# removing employees with a future start date to ensure that data is only from people who have actually worked for the company
 hr %>% 
   filter(employment_status != "future start") %>% 
   ggplot() +
@@ -199,11 +203,9 @@ hr %>%
 Employee satisfaction is measured on a scale of 1-5, with 5 indicating the highest satisfaction. Across the dataset, the median scoring for employee satisfaction is 4. It is notable that while employees with the highest performance level of "exceeds" is the only category where the mode is 5, they do not seem to be significantly more satisfied than those with other performance levels. It is unsuprising that employees with the "needs improvement" and "pip" performance levels have disproportionately incidence of a satisfaction level of 2 and two people have reported a satisfaction level of 1. 
 
 ```{r echo = FALSE}
+
 median(hr$emp_satisfaction)
-```
 
-
-```{r echo = FALSE}
 hr %>% 
   ggplot() +
   geom_bar(aes(x = emp_satisfaction), fill = "dark blue") +
@@ -215,6 +217,7 @@ hr %>%
 **Gender Pay Gap**
 
 On average, men earn $33.70 compared to $29.47 for women. On average, men earn more than women in nine different positions. The position with the highest discrepancy is IT support workers where men earn a mean of $38.66 compared to $32.18 for women. On average, women earn more than men in six different positions with the largest discrepancy being for software engineers where women earn an average of 52.33 compared to the 48.56 earned by men. 
+
 ```{r include = FALSE}
 hr %>% 
   filter(sex == "m") %>% 
@@ -262,7 +265,6 @@ hr %>%
     theme(plot.title = element_text(hjust = 0.5))
 
 ```
-Only some of these reasons 
 
 ```{r echo = FALSE}
 left_hr <- hr %>% 
@@ -279,7 +281,7 @@ left_indexed_tsibble <- left_tsibble %>%
 ggplot(left_indexed_tsibble, aes(x = leaving_month, y = monthly_count)) +
   geom_line(group = 1, colour = "dark blue") +
   labs(x = "Year",
-       y = "Count",
+       y = "Number of Employees",
        title = "Timing of Staff Leaving") +
     theme(plot.title = element_text(hjust = 0.5))
 ```
