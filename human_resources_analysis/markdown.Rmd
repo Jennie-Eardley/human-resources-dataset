@@ -1,7 +1,7 @@
 ---
-title: "Analysis of Dental Magic's Human Resources Dataset"
-author: "Jennie Eardley"
-date: "08/10/2020"
+title: <center> Analysis of Dental Magic's Human Resources Data <center>
+author: <center> Jennie Eardley <center>
+date: <center> 08/10/2020 <center>
 output: html_document
 ---
 
@@ -40,6 +40,7 @@ hr <- hr %>%
   filter(!is.na(emp_id))
 ```
 
+
 **Data Source**
 
 This is a dataset based around a fictional company called Dental Magic, created to teach HR analytics. The dataset is from Kaggle and is available here: https://www.kaggle.com/rhuebner/human-resources-data-set
@@ -60,7 +61,7 @@ indexed_tsibble <- hr_tsibble %>%
   summarise(monthly_count = n(), .groups = "drop") 
 
 ggplot(indexed_tsibble, aes(x = hire_month, y = monthly_count)) +
-  geom_line(group = 1, colour = "dark blue") +
+  geom_line(group = 1, colour = "dark green") +
   labs(x = "Year",
        y = "Number of New Employees",
        title = "Timing of New Staff Recruitment") +
@@ -73,7 +74,7 @@ indexed_monthly_tsibble <- hr_tsibble %>%
   summarise(seasonal_count = n(), .groups = "drop")
 
 ggplot(indexed_monthly_tsibble, aes(x = monthly_hire, y = seasonal_count)) +
-  geom_col(fill = "dark blue") +
+  geom_col(fill = "dark green") +
   labs(x = "Month",
        y = "Number of New Hires",
        title = "Recruitment by Month") +
@@ -92,7 +93,7 @@ left_indexed_tsibble <- left_tsibble %>%
   summarise(monthly_count = n(), .groups = "drop") 
 
 ggplot(left_indexed_tsibble, aes(x = leaving_month, y = monthly_count)) +
-  geom_line(group = 1, colour = "dark blue") +
+  geom_line(group = 1, colour = "dark green") +
   labs(x = "Year",
        y = "Number of Employees",
        title = "Timing of Staff Leaving") +
@@ -105,7 +106,7 @@ indexed_left_monthly_tsibble <- hr_tsibble %>%
   summarise(seasonal_loss = n(), .groups = "drop")
 
 ggplot(indexed_left_monthly_tsibble, aes(x = monthly_loss, y = seasonal_loss)) +
-  geom_col(fill = "dark blue") +
+  geom_col(fill = "dark green") +
   labs(x = "Month",
        y = "Number of Staff that Left",
        title = "Staff Leaving Numbers by Month") +
@@ -118,7 +119,7 @@ hr %>%
   mutate(recruitment_source = fct_rev(recruitment_source)) %>% 
   filter(!is.na(recruitment_source)) %>%
   ggplot() +
-  geom_bar(aes(x = recruitment_source), fill = "dark blue") +
+  geom_bar(aes(x = recruitment_source), fill = "dark green") +
   coord_flip() +
   labs(x = "Count",
        y = "Recruitment Source",
@@ -132,7 +133,7 @@ hr %>%
   filter(!is.na(race_desc)) %>% 
   mutate(race_desc = fct_rev(race_desc)) %>% 
   ggplot() +
-  geom_bar(aes(x = race_desc), fill = "dark blue") + 
+  geom_bar(aes(x = race_desc), fill = "dark green") + 
   coord_flip() +
   labs(x = "Racial Description",
        y = "Count", 
@@ -143,7 +144,7 @@ hr %>%
   mutate(race_desc = fct_rev(race_desc)) %>% 
   filter(from_diversity_job_fair_id == 1) %>% 
   ggplot() + 
-  geom_bar(aes(x = race_desc), fill = "dark blue") +
+  geom_bar(aes(x = race_desc), fill = "dark green") +
   coord_flip() +
   labs(x = "Racial Description", 
       y = "Count",
@@ -156,7 +157,12 @@ hr %>%
 hr %>% 
   filter(!is.na(emp_satisfaction)) %>% 
   ggplot() +
-  geom_point(aes(x = emp_satisfaction, y = pay_rate))
+  geom_point(aes(x = emp_satisfaction, y = pay_rate), col = "dark green") +
+  labs(x = "Employee Satisfaction Score",
+       y = "Pay Rate",
+       title = "Employee Satisfaction by Pay") +
+  theme(plot.title = element_text(hjust = 0.5))
+
 ```
 
 
@@ -239,7 +245,7 @@ median(hr$emp_satisfaction)
 
 hr %>% 
   ggplot() +
-  geom_bar(aes(x = emp_satisfaction), fill = "dark blue") +
+  geom_bar(aes(x = emp_satisfaction), fill = "dark green") +
   facet_wrap(~ performance_score) +
   labs(x = "Employee Satisfaction",
        y = "Count",
@@ -288,7 +294,7 @@ hr %>%
   filter(term_reason != "n/a - still employed") %>% 
   filter(term_reason != "n/a - has not started yet") %>% 
   ggplot() +
-  geom_bar(aes(x = term_reason), fill = "dark blue") +
+  geom_bar(aes(x = term_reason), fill = "dark green") +
   coord_flip() +
   labs(x = "Reason",
        y = "Count",
