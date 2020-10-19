@@ -75,6 +75,9 @@ hr %>%
   summarise(n = n()) %>% 
   arrange(desc(n))
 ```
+```{r}
+median(hr$emp_satisfaction)
+```
 
 ```{r}
 # calculating the percentage of employees who are not fully meeting their performance requirements 
