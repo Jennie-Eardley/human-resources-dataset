@@ -132,7 +132,9 @@ hr %>%
 
 **Employee Satisfaction** 
 
-Employee satisfaction is measured on a scale of 1 to 5, with 5 indicating the highest satisfaction. Across the dataset, the employee satisfaction median score is 4 with a mode score of 3. The data gives numerous variables which could have an impact on employee satisfaction. The report considers the impact of different factors in influencing employee satisfaction. Firstly, the impact of pay on satisfaction. The plot does not suggest that there is much of a correlation between employee satisfaction and their payrate as the data is very spread out. 
+Employee satisfaction is measured on a scale of 1 to 5, with 5 indicating the highest satisfaction. Across the dataset, the employee satisfaction median score is 4 with a mode score of 3.
+
+The data gives numerous factors which could have an impact on employee satisfaction. This report considers the impact of different factors in influencing employee satisfaction. Firstly, the impact of pay on employee satisfaction. The plot does not suggest that there is much of a correlation between employee satisfaction and their payrate as the data is very spread out. 
 
 ```{r fig.align='center', echo = FALSE}
 hr %>% 
@@ -265,6 +267,31 @@ average_rate <- inner_join(male_rate, female_rate) %>%
   mutate(difference = average_male_rate - average_female_rate) %>% 
   arrange(desc(difference))
 ```
+
+**Turnover**
+
+It also highlights two positions where the sole employee has not been replaced. 
+
+```{r echo = FALSE}
+have_left <- hr %>% 
+   filter(!is.na(term_reason)) %>% 
+  filter(term_reason != "n/a - still employed") %>% 
+  filter(term_reason != "n/a - has not started yet")
+have_left
+
+total_positions <- hr %>% 
+  count(position) 
+
+positions_left <- have_left %>% 
+count(position) 
+
+right_join(total_positions, positions_left, by = c("position" = "position")) %>%
+  rename("Total" = "n.x", "Have_Left" = "n.y", "Position" = "position") %>% 
+  mutate(Turnover = round(Have_Left/Total * 100, digits = 2)) %>% 
+  arrange(desc(Turnover)) %>% 
+  gt()
+```
+
 
 **Employees Who Have Left**
 
